@@ -1,0 +1,48 @@
+name: Generar biblioteca personal
+
+on:
+  push:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [documents-updated]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+      - name: Descargar el sistema y generar la biblioteca
+        env:
+          DOCUMENTS_TOKEN: ${{ secrets.DOCUMENTS_TOKEN }}
+        shell: bash
+        run: |
+          if [ -n "$DOCUMENTS_TOKEN" ]; then
+            authorization=$(printf 'x-access-token:%s' "$DOCUMENTS_TOKEN" | base64 -w0)
+            echo "::add-mask::$authorization"
+            export GIT_CONFIG_COUNT=1
+            export GIT_CONFIG_KEY_0=http.https://github.com/.extraheader
+            export GIT_CONFIG_VALUE_0="AUTHORIZATION: basic $authorization"
+          fi
+          node library.mjs build
+      - uses: actions/upload-artifact@v7
+        with:
+          name: web
+          path: .cache/system/dist/
+          include-hidden-files: true
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v7
+        with:
+          name: versiones
+          path: |
+            .cache/system-version.json
+            .cache/system/.astro/documents-resolved.json
+          include-hidden-files: true
+          if-no-files-found: error

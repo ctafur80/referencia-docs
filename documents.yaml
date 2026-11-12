@@ -1,0 +1,6 @@
+# Catálogo personal: este archivo SÍ se versiona en el repositorio de la biblioteca.
+# documents:
+#   - slug: neovim
+#     repository: https://github.com/USUARIO/documentacion-neovim.git
+#     ref: main
+documents: []
