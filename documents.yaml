@@ -3,4 +3,10 @@
 #   - slug: neovim
 #     repository: https://github.com/USUARIO/documentacion-neovim.git
 #     ref: main
-documents: []
+documents:
+
+  - slug: neovim
+    repository: git@github.com:ctafur80/neovim-ref.git
+    ref: main
+
+
